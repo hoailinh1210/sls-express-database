@@ -5,7 +5,18 @@ const app = express();
 const AWS = require('aws-sdk');
 
 const USERS_TABLE = process.env.USERS_TABLE || 'test';
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const IS_OFFLINE = process.env.IS_OFFLINE;
+let dynamoDb ;
+
+if (IS_OFFLINE === 'true'){
+    dynamoDb = new AWS.DynamoDB.DocumentClient({
+        region: 'localhost',
+        endpoint: 'http://localhost:8000'
+    })
+}
+else {
+    dynamoDb = new AWS.DynamoDB.DocumentClient();
+}
 
 app.use(bodyParser.json({strict: false}));
 app.use(bodyParser.urlencoded({extended: true}))
